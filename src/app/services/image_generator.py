@@ -56,17 +56,19 @@ async def generate_image(prompt: str, aspect_ratio: str = "16:9") -> str:
     }
 
     async with httpx.AsyncClient(timeout=120.0) as client:
-        try:
-            resp = await client.post(MINIMAX_URL, headers=headers, json=payload)
-            resp.raise_for_status()
-            images: list = resp.json().get("data", {}).get("image_base64", [])
-            if images:
-                return f"data:image/jpeg;base64,{images[0]}"
-            logger.error(f"MiniMax returned no images: {resp.json()}")
-        except Exception as e:
-            logger.error(f"MiniMax error: {e}")
+        resp = await client.post(MINIMAX_URL, headers=headers, json=payload)
+        
+        # If not 200, raise the exact error so the user sees it (e.g., usage limit exceeded)
+        if resp.status_code != 200:
+            error_msg = resp.json().get("base_resp", {}).get("status_msg", resp.text)
+            raise RuntimeError(f"MiniMax Error: {error_msg}")
 
-    return _placeholder()
+        images: list = resp.json().get("data", {}).get("image_base64", [])
+        if not images:
+            error_msg = resp.json().get("base_resp", {}).get("status_msg", "Unknown error")
+            raise RuntimeError(f"MiniMax returned no images: {error_msg}")
+            
+        return f"data:image/jpeg;base64,{images[0]}"
 
 
 async def generate_images(prompts: list[str]) -> list[str]:
