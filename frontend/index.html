@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Pitch Visualizer — Storyboard Generator</title>
+    <meta name="description" content="Convert your pitch into a visual comic-style storyboard using AI."/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-icon">🎬</span>
+            <h1>Pitch Visualizer</h1>
+        </div>
+        <p class="subtitle">From Words to Storyboard</p>
+    </header>
+
+    <main class="container">
+        <section class="input-section">
+            <div class="input-group">
+                <label for="pitch-text">Your Pitch</label>
+                <textarea id="pitch-text" rows="6"
+                    placeholder="Describe your story or product pitch here... e.g. Our app helps remote teams collaborate using async video updates and AI summaries..."></textarea>
+            </div>
+
+            <div class="controls-row">
+                <div class="input-group style-group">
+                    <label for="style-select">Visual Style</label>
+                    <select id="style-select">
+                        <option value="comic">Comic Book</option>
+                        <option value="corporate minimal">Corporate Minimal</option>
+                        <option value="cinematic">Cinematic</option>
+                        <option value="flat illustration">Flat Illustration</option>
+                        <option value="cyberpunk">Cyberpunk</option>
+                        <option value="watercolor">Watercolor</option>
+                    </select>
+                </div>
+                <button id="generate-btn" class="primary-btn">
+                    <span class="btn-text">Generate Storyboard</span>
+                    <div class="spinner hidden" id="loading-spinner"></div>
+                </button>
+            </div>
+
+            <div id="error-message" class="error-banner hidden"></div>
+        </section>
+
+        <section id="storyboard-section" class="storyboard-section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Your Storyboard</h2>
+                <a id="download-btn" href="#" class="download-btn hidden" target="_blank" download>
+                    ⬇ Download HTML
+                </a>
+            </div>
+            <div id="storyboard-container" class="storyboard-grid"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
