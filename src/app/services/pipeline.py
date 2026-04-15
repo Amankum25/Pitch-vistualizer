@@ -10,13 +10,20 @@ import asyncio
 import json
 import uuid
 import logging
+import re
 from src.app.services.groq_client import groq_client
 from src.app.services.prompts import build_master_prompt, build_image_prompt, build_reviewer_prompt
 from src.app.services.image_generator import generate_images
 from src.app.services.storage_service import store_image
 from src.app.services.html_exporter import export_html_storyboard
 from src.app.services.validator import validate_panels
-from src.app.models.job import Panel, FrameAttributes, StoryboardResponse
+from src.app.models.job import (
+    Panel, FrameAttributes, StoryboardResponse,
+    PromptPreviewFrame, PromptPreviewResponse,
+)
+
+logger = logging.getLogger(__name__)
+
 
 logger = logging.getLogger(__name__)
 
@@ -142,4 +149,74 @@ async def process_storyboard(text: str, style: str) -> StoryboardResponse:
         style=style,
         total_panels=len(panels),
         html_download_url=f"/api/v1/storyboard/{storyboard_id}",
+    )
+
+
+async def preview_prompts(text: str, style: str) -> PromptPreviewResponse:
+    """
+    Run ONLY the LLM phase — returns the enriched image prompts that
+    WOULD be sent to MiniMax. No image API calls made.
+    Perfect for local testing and prompt inspection.
+    """
+    logger.info(f"[PREVIEW] Running LLM phase only | style={style}")
+
+    messages = build_master_prompt(text, style)
+    raw = await groq_client.parallel_complete(messages)
+    parsed = _parse_json_safe(raw)
+
+    character_desc = "one person, consistent appearance"
+    frames = []
+
+    if isinstance(parsed, list) and parsed:
+        char_obj = parsed[0] if parsed[0].get("__character__") else None
+        if char_obj:
+            character_desc = (
+                char_obj.get("appearance") or char_obj.get("description") or character_desc
+            )
+            frames = [f for f in parsed[1:] if not f.get("__character__")]
+        else:
+            frames = [f for f in parsed if not f.get("__character__")]
+    elif isinstance(parsed, dict):
+        character_desc = parsed.get("character", {}).get("description", character_desc)
+        frames = parsed.get("frames", [])
+
+    # Fallback
+    if not frames:
+        sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+|\bthen\b|\bafter\b|\bfinally\b', text, flags=re.IGNORECASE) if len(s.strip()) > 8]
+        while len(sentences) < 3:
+            sentences.append(sentences[-1] if sentences else text)
+        frames = [
+            {"title": f"Scene {i+1}", "scene": s, "prompt": s, "caption": s[:80], "emotion": "neutral", "meaning": "story moment"}
+            for i, s in enumerate(sentences[:5])
+        ]
+
+    while len(frames) < 3:
+        frames.append(frames[-1])
+
+    # Build the exact prompts that would go to MiniMax
+    preview_frames = []
+    for f in frames:
+        minimax_prompt = build_image_prompt(
+            scene=f.get("prompt") or f.get("image_prompt") or f.get("scene", ""),
+            character_desc=character_desc,
+            style=style,
+            emotion=f.get("emotion", ""),
+            meaning=f.get("meaning", ""),
+        )
+        preview_frames.append(
+            PromptPreviewFrame(
+                title=f.get("title", ""),
+                scene=f.get("scene", ""),
+                caption=f.get("caption", ""),
+                emotion=f.get("emotion", ""),
+                meaning=f.get("meaning", ""),
+                minimax_prompt=minimax_prompt,
+            )
+        )
+
+    return PromptPreviewResponse(
+        character_description=character_desc,
+        style=style,
+        total_frames=len(preview_frames),
+        frames=preview_frames,
     )

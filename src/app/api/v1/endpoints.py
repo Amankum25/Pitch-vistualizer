@@ -2,8 +2,8 @@ import pathlib
 import logging
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse
-from src.app.models.job import StoryboardRequest, StoryboardResponse
-from src.app.services.pipeline import process_storyboard
+from src.app.models.job import StoryboardRequest, StoryboardResponse, PromptPreviewResponse
+from src.app.services.pipeline import process_storyboard, preview_prompts
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -18,6 +18,8 @@ async def health_check():
 
 @router.post("/generate-storyboard", response_model=StoryboardResponse)
 async def generate_storyboard(request: StoryboardRequest):
+    """Full pipeline: LLM + MiniMax images + HTML export.
+    Set MOCK_IMAGES=true in .env to skip MiniMax for local testing."""
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty.")
     try:
@@ -27,6 +29,19 @@ async def generate_storyboard(request: StoryboardRequest):
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
         logger.error(f"Pipeline error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/preview-prompts", response_model=PromptPreviewResponse)
+async def preview_prompts_endpoint(request: StoryboardRequest):
+    """Dry-run: runs LLM only, returns the exact prompts that would go to MiniMax.
+    No image API calls made — safe for local testing with no MiniMax quota."""
+    if not request.text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty.")
+    try:
+        return await preview_prompts(request.text, request.style)
+    except Exception as e:
+        logger.error(f"Preview error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
