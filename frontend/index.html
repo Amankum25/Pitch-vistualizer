@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,7 +14,8 @@
             <span class="logo-icon">🎬</span>
             <h1>Pitch Visualizer</h1>
         </div>
-        <p class="subtitle">From Words to Storyboard</p>
+        <p class="subtitle">From Words to Comic Storyboard</p>
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme" onclick="toggleTheme()">🌗</button>
     </header>
 
     <main class="container">
@@ -22,7 +23,7 @@
             <div class="input-group">
                 <label for="pitch-text">Your Pitch</label>
                 <textarea id="pitch-text" rows="6"
-                    placeholder="Describe your story or product pitch here... e.g. Our app helps remote teams collaborate using async video updates and AI summaries..."></textarea>
+                    placeholder="Describe your story... e.g. A student struggles with exams, keeps pushing through hard nights, and finally succeeds in landing his dream job."></textarea>
             </div>
 
             <div class="controls-row">
@@ -46,14 +47,32 @@
             <div id="error-message" class="error-banner hidden"></div>
         </section>
 
+        <!-- Results section -->
         <section id="storyboard-section" class="storyboard-section hidden">
             <div class="section-header">
                 <h2 class="section-title">Your Storyboard</h2>
-                <a id="download-btn" href="#" class="download-btn hidden" target="_blank" download>
-                    ⬇ Download HTML
-                </a>
+                <div class="section-actions">
+                    <button id="view-toggle-btn" class="outline-btn" onclick="toggleView()">▶ Slideshow</button>
+                    <a id="download-btn" href="#" class="download-btn hidden" target="_blank">⬇ Download</a>
+                    <a id="view-btn" href="#" class="outline-btn hidden" target="_blank">🔗 Share Link</a>
+                </div>
             </div>
+
+            <!-- Grid -->
             <div id="storyboard-container" class="storyboard-grid"></div>
+
+            <!-- Slideshow -->
+            <div id="slideshow-view" class="slideshow hidden">
+                <img id="slide-img" src="" alt="" class="slide-image"/>
+                <h3 id="slide-title" class="slide-title"></h3>
+                <p id="slide-caption" class="slide-caption"></p>
+                <p id="slide-scene" class="slide-scene"></p>
+                <div class="slide-nav">
+                    <button class="outline-btn" onclick="prevSlide()">← Prev</button>
+                    <span id="slide-counter" class="slide-counter"></span>
+                    <button class="outline-btn" onclick="nextSlide()">Next →</button>
+                </div>
+            </div>
         </section>
     </main>
 
