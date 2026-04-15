@@ -109,7 +109,7 @@ def build_master_prompt(text: str, style: str) -> list:
                 "PHASE 2: STORYBOARD GENERATION (STRICT RULES)\n"
                 "═══════════════════════════════════════════════\n\n"
 
-                "Generate EXACTLY 3 to 5 frames based on the story complexity.\n\n"
+                "Generate EXACTLY 4 to 6 frames based on the story complexity. Absolute MINIMUM of 4 frames.\n\n"
 
                 "EACH frame MUST have:\n"
                 "  title    — short, evocative (max 5 words)\n"

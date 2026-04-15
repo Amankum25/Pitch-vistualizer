@@ -1,81 +1,412 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pitch Visualizer — Storyboard Generator</title>
-    <meta name="description" content="Convert your pitch into a visual comic-style storyboard using AI."/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <meta name="description" content="Harness the power of AI to transform text narratives into professional cinematic visual sequences in seconds."/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <header class="app-header">
+
+<!-- ═══════════════════════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════════════════════ -->
+<div id="landing-page" class="page page-active">
+
+    <!-- Top Nav -->
+    <nav class="navbar">
         <div class="logo">
-            <span class="logo-icon">🎬</span>
-            <h1>Pitch Visualizer</h1>
+            <div class="logo-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" opacity="0.9"/>
+                    <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="logo-text">Pitch <strong>Visualizer</strong></span>
         </div>
-        <p class="subtitle">From Words to Comic Storyboard</p>
-        <button id="theme-toggle" class="icon-btn" title="Toggle theme" onclick="toggleTheme()">🌗</button>
+
+        <div class="nav-links">
+            <span class="nav-link nav-link-active">Studio</span>
+            <span class="nav-link">Library</span>
+            <span class="nav-link">Assets</span>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark/light mode">
+            <span class="toggle-track">
+                <span class="toggle-thumb">
+                    <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <svg class="icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </span>
+            </span>
+        </button>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI-Powered Visual Storytelling
+        </div>
+        <h1 class="hero-title">
+            Turn your story into<br/>
+            a <span class="gradient-text">visual storyboard</span>
+        </h1>
+        <p class="hero-subtitle">
+            Harness the power of AI to transform text narratives into professional cinematic visual sequences in seconds.
+        </p>
     </header>
 
-    <main class="container">
-        <section class="input-section">
+    <!-- Input Card -->
+    <main class="landing-container">
+        <section class="input-card">
+
             <div class="input-group">
-                <label for="pitch-text">Your Pitch</label>
-                <textarea id="pitch-text" rows="6"
-                    placeholder="Describe your story... e.g. A student struggles with exams, keeps pushing through hard nights, and finally succeeds in landing his dream job."></textarea>
+                <label for="pitch-text">
+                    <span class="label-icon">✦</span>
+                    Your Narrative
+                </label>
+                <textarea
+                    id="pitch-text"
+                    rows="6"
+                    placeholder="e.g. A young entrepreneur struggles with their first business. After many late nights and near-failures, they discover a groundbreaking tool and finally achieve massive success…"
+                ></textarea>
+                <div class="char-hint">Describe your story in detail for best results</div>
             </div>
 
             <div class="controls-row">
-                <div class="input-group style-group">
-                    <label for="style-select">Visual Style</label>
-                    <select id="style-select">
-                        <option value="comic">Comic Book</option>
-                        <option value="corporate minimal">Corporate Minimal</option>
-                        <option value="cinematic">Cinematic</option>
-                        <option value="flat illustration">Flat Illustration</option>
-                        <option value="cyberpunk">Cyberpunk</option>
-                        <option value="watercolor">Watercolor</option>
-                    </select>
+                <div class="input-group style-group" style="margin-bottom:0">
+                    <label for="style-select">
+                        <span class="label-icon">🎨</span>
+                        Visual Style
+                    </label>
+                    <div class="select-wrapper">
+                        <svg class="select-icon" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        <select id="style-select" class="premium-select">
+                            <option value="comic">🦸  Comic Book</option>
+                            <option value="corporate minimal">🏢  Corporate Minimal</option>
+                            <option value="cinematic">🎥  Cinematic 3D</option>
+                            <option value="flat illustration">📐  Flat Vector</option>
+                            <option value="cyberpunk">🌆  Cyberpunk</option>
+                            <option value="watercolor">🎨  Watercolor Outline</option>
+                            <option value="anime">⛩️  Anime</option>
+                            <option value="realistic human">📷  Realistic Human</option>
+                        </select>
+                        <svg class="select-arrow" width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </div>
                 </div>
-                <button id="generate-btn" class="primary-btn">
-                    <span class="btn-text">Generate Storyboard</span>
-                    <div class="spinner hidden" id="loading-spinner"></div>
+
+                <button id="generate-btn" class="gradient-btn">
+                    <div class="btn-inner">
+                        <svg class="btn-icon" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" style="display:none"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                        </svg>
+                        <span class="btn-text">Generate Storyboard</span>
+                        <div class="btn-shimmer"></div>
+                    </div>
+                    <div class="loader-ring hidden" id="loading-spinner"></div>
                 </button>
             </div>
 
             <div id="error-message" class="error-banner hidden"></div>
         </section>
 
-        <!-- Results section -->
-        <section id="storyboard-section" class="storyboard-section hidden">
-            <div class="section-header">
-                <h2 class="section-title">Your Storyboard</h2>
-                <div class="section-actions">
-                    <button id="view-toggle-btn" class="outline-btn" onclick="toggleView()">▶ Slideshow</button>
-                    <a id="download-btn" href="#" class="download-btn hidden" target="_blank">⬇ Download</a>
-                    <a id="view-btn" href="#" class="outline-btn hidden" target="_blank">🔗 Share Link</a>
-                </div>
+        <!-- Feature chips -->
+        <div class="feature-chips">
+            <div class="chip">
+                <span class="chip-icon">🎬</span>
+                Cinematic Frames
             </div>
-
-            <!-- Grid -->
-            <div id="storyboard-container" class="storyboard-grid"></div>
-
-            <!-- Slideshow -->
-            <div id="slideshow-view" class="slideshow hidden">
-                <img id="slide-img" src="" alt="" class="slide-image"/>
-                <h3 id="slide-title" class="slide-title"></h3>
-                <p id="slide-caption" class="slide-caption"></p>
-                <p id="slide-scene" class="slide-scene"></p>
-                <div class="slide-nav">
-                    <button class="outline-btn" onclick="prevSlide()">← Prev</button>
-                    <span id="slide-counter" class="slide-counter"></span>
-                    <button class="outline-btn" onclick="nextSlide()">Next →</button>
-                </div>
+            <div class="chip">
+                <span class="chip-icon">🎨</span>
+                8 Visual Styles
             </div>
-        </section>
+            <div class="chip">
+                <span class="chip-icon">⚡</span>
+                AI-Powered
+            </div>
+            <div class="chip">
+                <span class="chip-icon">📽️</span>
+                Slideshow Export
+            </div>
+        </div>
     </main>
+</div>
 
-    <script src="app.js"></script>
+<!-- ═══════════════════════════════════════════════════════
+     LOADING PAGE
+═══════════════════════════════════════════════════════ -->
+<div id="loading-page" class="page">
+
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" opacity="0.9"/>
+                    <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="logo-text">Pitch <strong>Visualizer</strong></span>
+        </div>
+        <div class="nav-links">
+            <span class="nav-link nav-link-active">Studio</span>
+            <span class="nav-link">Library</span>
+            <span class="nav-link">Pricing</span>
+        </div>
+    </nav>
+
+    <div class="loading-stage">
+        <!-- Animated orb -->
+        <div class="loading-orb">
+            <div class="orb-core"></div>
+            <div class="orb-ring orb-ring-1"></div>
+            <div class="orb-ring orb-ring-2"></div>
+            <div class="orb-ring orb-ring-3"></div>
+            <div class="orb-particles">
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+                <span class="particle"></span>
+            </div>
+        </div>
+
+        <h2 class="loading-title">Crafting your story</h2>
+        <p class="loading-subtitle">Please wait while our AI engine visualizes your concepts.</p>
+
+        <!-- Progress bar -->
+        <div class="progress-track">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-label">
+            <span id="progress-step-text">Initializing pipeline…</span>
+            <span id="progress-pct">0%</span>
+        </div>
+
+        <!-- Steps -->
+        <div class="loading-steps">
+            <div class="step-item" id="step-1">
+                <div class="step-dot"></div>
+                <span>Parsing narrative</span>
+            </div>
+            <div class="step-item" id="step-2">
+                <div class="step-dot"></div>
+                <span>Generating scene frames</span>
+            </div>
+            <div class="step-item" id="step-3">
+                <div class="step-dot"></div>
+                <span>Rendering visuals</span>
+            </div>
+            <div class="step-item" id="step-4">
+                <div class="step-dot"></div>
+                <span>Assembling storyboard</span>
+            </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="loading-tip">
+            <span class="tip-icon">💡</span>
+            <em>"Visual stories with higher contrast prompts often yield more cinematic results."</em>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     STORYBOARD PAGE  (Grid + Slideshow)
+═══════════════════════════════════════════════════════ -->
+<div id="storyboard-page" class="page">
+
+    <!-- App shell nav -->
+    <div class="app-shell">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-mark small">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" opacity="0.9"/>
+                        <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="sidebar-btn sidebar-btn-active" title="Projects" onclick="navigateTo('landing-page')">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+                    </svg>
+                    <span>Projects</span>
+                </button>
+                <button class="sidebar-btn" title="Library">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 3H3v18h18V3zm-10 14H5v-2h6v2zm0-4H5v-2h6v2zm0-4H5V7h6v2zm7 8h-5v-8h5v8z"/>
+                    </svg>
+                    <span>Library</span>
+                </button>
+                <button class="sidebar-btn" title="Assets">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5S15.01 22 17.5 22s4.5-2.01 4.5-4.5S19.99 13 17.5 13zm0 7c-1.38 0-2.5-1.12-2.5-2.5S16.12 15 17.5 15s2.5 1.12 2.5 2.5S18.88 20 17.5 20zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/>
+                    </svg>
+                    <span>Assets</span>
+                </button>
+                <button class="sidebar-btn" title="Settings">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button class="sidebar-btn" onclick="toggleTheme()" title="Toggle Theme">
+                    <svg class="sb-moon" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="sb-sun hidden" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <span>Theme</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main content area -->
+        <div class="main-content">
+
+            <!-- Top toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <div class="workspace-label">Project Workspace</div>
+                    <div class="toolbar-divider"></div>
+                    <button class="toolbar-tab toolbar-tab-active" id="tab-grid" onclick="switchTab('grid')">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>
+                        </svg>
+                        Grid
+                    </button>
+                    <button class="toolbar-tab" id="tab-slideshow" onclick="switchTab('slideshow')">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3l5 4-5 4V6z"/>
+                        </svg>
+                        Slideshow
+                    </button>
+                </div>
+                <div class="toolbar-right">
+                    <a id="view-btn" href="#" class="toolbar-action hidden" target="_blank">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                        </svg>
+                        Share
+                    </a>
+                    <a id="download-btn" href="#" class="toolbar-action toolbar-action-primary hidden" target="_blank">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                        Download HTML
+                    </a>
+                    <button class="toolbar-action" onclick="navigateTo('landing-page')">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                        New Story
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid View -->
+            <div id="grid-view" class="view-panel">
+                <div class="grid-header">
+                    <div>
+                        <h2 class="section-title">Your Storyboard</h2>
+                        <p class="section-subtitle">Review and organize your cinematic sequence for the final pitch deck.</p>
+                    </div>
+                    <button class="add-scene-btn" disabled>
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Add Scene
+                    </button>
+                </div>
+                <div id="storyboard-container" class="layout-grid"></div>
+            </div>
+
+            <!-- Slideshow View -->
+            <div id="slideshow-view" class="view-panel hidden">
+                <div class="slideshow-shell">
+                    <div class="slideshow-tabs">
+                        <button class="slideshow-tab active">Slideshow</button>
+                        <button class="slideshow-tab">Storyline</button>
+                        <button class="slideshow-tab">Export</button>
+                    </div>
+
+                    <div class="slide-stage">
+                        <div class="slide-image-wrap">
+                            <img id="slide-img" src="" alt="" class="slide-image"/>
+                            <div class="slide-overlay">
+                                <span id="slide-counter-badge" class="slide-badge"></span>
+                            </div>
+                        </div>
+
+                        <div class="slide-text">
+                            <h3 id="slide-title" class="slide-title"></h3>
+                            <p id="slide-caption" class="slide-caption"></p>
+                            <p id="slide-scene" class="slide-scene"></p>
+                        </div>
+
+                        <!-- Prev / Next controls -->
+                        <button class="slide-nav slide-nav-prev" id="prev-btn" onclick="prevSlide()">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/>
+                            </svg>
+                        </button>
+                        <button class="slide-nav slide-nav-next" id="next-btn" onclick="nextSlide()">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Thumbnail strip -->
+                    <div class="thumb-strip" id="thumb-strip"></div>
+                </div>
+            </div>
+
+        </div><!-- /.main-content -->
+    </div><!-- /.app-shell -->
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
